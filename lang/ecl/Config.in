@@ -1,0 +1,17 @@
+menu "Configuration"
+  depends on PACKAGE_ecl
+
+  config ECL_INCLUDE_C_BACKEND
+    bool "Include the C compiler backend (requires a C compiler on the host)"
+    default y
+
+#  choice
+#    prompt "Default compiler backend"
+#    depends on ECL_INCLUDE_C_BACKEND
+#    config ECL_DEFAULT_BACKEND_IS_BYTECOMPILER
+#      bool "Bytecompiler"
+#    config ECL_DEFAULT_BACKEND_IS_C
+#      bool "C compiler"
+#  endchoice
+
+endmenu

@@ -1,0 +1,40 @@
+From 83d10c254bbfb1090457660f21dd5d77c8875726 Mon Sep 17 00:00:00 2001
+From: Attila Lendvai <attila@lendvai.name>
+Date: Fri, 25 Sep 2015 15:56:45 +0200
+Subject: [PATCH] Delay the decision about the compiler backend.
+
+Readtime may happen when cross-compiling, so move it to runtime.
+
+Also default to the bytecompiler on mips.
+
+Signed-off-by: Attila Lendvai <attila@lendvai.name>
+---
+ contrib/bytecmp/bytecmp.lsp | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/contrib/bytecmp/bytecmp.lsp b/contrib/bytecmp/bytecmp.lsp
+index cd8313d..203cb6c 100755
+--- a/contrib/bytecmp/bytecmp.lsp
++++ b/contrib/bytecmp/bytecmp.lsp
+@@ -128,12 +128,12 @@
+     (funcall 'install-c-compiler)))
+ 
+ #-ecl-min
+-(progn
+-#+(and dlopen (not windows))
+-(sys::autoload "SYS:cmp" 'compile-file 'compile 'compile-file-pathname 'disassemble)
+-#-(and dlopen (not windows))
+-(install-bytecodes-compiler)
+-)
++(if (and (member :dlopen *features*)
++         (notany (lambda (el)
++                   (member el *features*))
++                 '(:windows :mips)))
++    (sys::autoload "SYS:cmp" 'compile-file 'compile 'compile-file-pathname 'disassemble)
++    (install-bytecodes-compiler))
+ 
+ (provide 'BYTECMP)
+ 
+-- 
+2.1.4
+
